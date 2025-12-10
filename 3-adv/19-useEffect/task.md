@@ -1,0 +1,3 @@
+- Q1: How to create class components?
+- Q2: How to pass props to class components?
+- Q3: How state is working in class components?
