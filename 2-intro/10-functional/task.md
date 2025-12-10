@@ -1,0 +1,2 @@
+- Q1: How to create functional components?
+- Q2: How to pass props to the components?

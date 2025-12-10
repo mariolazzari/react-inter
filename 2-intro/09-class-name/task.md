@@ -1,0 +1,1 @@
+- Q1: Why can't we write class inside our JSX markup?
