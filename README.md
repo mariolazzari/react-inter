@@ -413,5 +413,126 @@ export const ThemeContextProvider = ({ children }) => {
 _useRef_ is a React Hook that lets you create a mutable reference object that persists across renders.
 
 ```jsx
+import { useRef } from "react";
+
+const App = () => {
+  const inputRef = useRef(null);
+
+  const onFocusClick = () => {
+    if (!inputRef.current) {
+      return;
+    }
+    inputRef.value = "Mario";
+    inputRef.current.focus();
+  };
+
+  return (
+    <div className="app">
+      <input ref={inputRef} type="text" />
+      <button onClick={onFocusClick}>Focus</button>
+    </div>
+  );
+};
+
+export default App;
+```
+
+### useMemo
+
+_useMemo_ is a React Hook that memoizes (caches) the result of a calculation, so it isn’t recomputed on every render.
+It helps optimize performance by avoiding unnecessary expensive computations.
+
+```js
+import { useState } from "react";
+
+const users = [
+  { id: 1, name: "Mario Lazzari" },
+  { id: 2, name: "Maria Lazzari" },
+];
+
+const App = () => {
+  const [search, setSearch] = useState("");
+  const [text, setText] = useState("");
+
+  const filtered = useMemo(
+    () =>
+      users.filter(u => u.name.toLowerCase().includes(search.toLowerCase())),
+    [search]
+  );
+
+  return (
+    <div className="app">
+      <input type="text" value={text} onChange={e => setText(e.target.value)} />
+      <button onClick={() => setSearch(text)}>Search</button>
+      <p>
+        {text} {search}
+      </p>
+
+      <ul>
+        {filtered.map(u => (
+          <li key={u.id}>{u.name}</li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+export default App;
+```
+
+### useCallback
+
+_useCallback_ is a React Hook that memoizes (caches) a function so that it keeps the same reference between renders unless its dependencies change.
+
+```jsx
+import { useState, useCallback, memo } from "react";
+
+const initUsers = [
+  { id: 1, name: "Mario Lazzari" },
+  { id: 2, name: "Maria Lazzari" },
+];
+
+const UserList = memo(({ users, onRemove }) => {
+  return (
+    <ul>
+      {users.map(u => (
+        <li key={u.id} onClick={() => onRemove(u.id)}>
+          {u.name}
+        </li>
+      ))}
+    </ul>
+  );
+});
+
+const App = () => {
+  const [users, setUsers] = useState(initUsers);
+  const [search, setSearch] = useState("");
+
+  const onRemove = useCallback(
+    id => {
+      const filtered = users.filter(u => u.id !== id);
+      setUsers(filtered);
+    },
+    [users]
+  );
+
+  return (
+    <div className="app">
+      <input
+        type="text"
+        value={search}
+        onChange={e => setSearch(e.target.value)}
+      />
+      <UserList users={users} onRemove={onRemove} />
+    </div>
+  );
+};
+
+export default App;
+```
+
+### Custom hook: useFetch
+
+```jsx
 
 ```
