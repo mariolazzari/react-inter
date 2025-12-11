@@ -316,21 +316,51 @@ export default App;
 _useReducer_ is an alternative to useState for managing complex state or multiple state updates that belong together.
 
 ```jsx
-import { useEffect, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import axios from "axios";
 
+const initialState = {
+  isLoading: false,
+  error: null,
+  data: [],
+};
+
+const reducer = (state, action) => {
+  console.log("reducer", state, action);
+
+  switch (action.type) {
+    case "loading":
+      return {
+        ...state,
+        isLoading: true,
+      };
+
+    case "success":
+      return {
+        ...state,
+        isLoading: false,
+        data: action.payload,
+      };
+
+    default:
+      return state;
+  }
+};
+
 const App = () => {
-  const [articles, setArticles] = useState([]);
-  console.log("render");
+  const [state, dispatch] = useReducer(reducer, initialState);
+  console.log(state);
 
   useEffect(() => {
+    dispatch({ type: "loading" });
     axios.get("http://localhost:3004/articles").then(response => {
-      setArticles(response.data);
+      dispatch({ type: "success", payload: response.data });
     });
   }, []);
   return (
     <div className="app">
-      {articles.map(article => (
+      {state.isLoading && <div>Loading...</div>}
+      {state.data.map(article => (
         <div key={article.id}>{article.title}</div>
       ))}
     </div>
@@ -338,4 +368,50 @@ const App = () => {
 };
 
 export default App;
+```
+
+### useContext
+
+_useContext_ is a React Hook that lets you read values from a Context without needing to pass props manually through every component level.
+
+```js
+import { createContext, useState } from "react";
+
+const themes = {
+  light: {
+    foreground: "#000000",
+    background: "#eeeeee",
+  },
+  dark: {
+    foreground: "#ffffff",
+    background: "#222222",
+  },
+};
+
+export const ThemeContext = createContext();
+
+export const ThemeContextProvider = ({ children }) => {
+  const [theme, setTheme] = useState(themes.light);
+  const [activeTheme, setActiveTheme] = useState("light");
+
+  const toogleTheme = () => {
+    const nextTheme = activeTheme === "light" ? "dark" : "light";
+    setTheme(themes[nextTheme]);
+    setActiveTheme(nextTheme);
+  };
+
+  return (
+    <ThemeContext.Provider value={[theme, toogleTheme]}>
+      {children}
+    </ThemeContext.Provider>
+  );
+};
+```
+
+### useRef
+
+_useRef_ is a React Hook that lets you create a mutable reference object that persists across renders.
+
+```jsx
+
 ```
