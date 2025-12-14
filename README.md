@@ -622,6 +622,118 @@ export default memo(ImageSlider, comparatorProps);
 
 [docs](https://reactrouter.com/)
 
-```js
-
+```sh
+pnpm i react-router-dom
 ```
+
+#### Router setup
+
+```js
+import ReactDOM from "react-dom/client";
+import App from "./App.jsx";
+import { BrowserRouter } from "react-router-dom";
+
+ReactDOM.createRoot(document.getElementById("root")).render(
+  <BrowserRouter>
+    <App />
+  </BrowserRouter>
+);
+```
+
+```js
+import { Routes, Route, Link } from "react-router-dom";
+import Dashboard from "./Dashboard";
+import Home from "./Home";
+import Layout from "./Layout";
+import Article from "./Article";
+import Auth from "./Auth";
+
+const App = () => {
+  return (
+    <div className="app">
+      <Link to="/">Home</Link>
+      <Link to="/dashboard">Dashboard</Link>
+
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index path="/" element={<Home />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/article:id" element={<Article />} />
+          <Route
+            path="/private"
+            element={
+              <Auth>
+                <Article />
+              </Auth>
+            }
+          />
+        </Route>
+        <Route path="*" element={<div>404</div>} />
+      </Routes>
+    </div>
+  );
+};
+
+export default App;
+```
+
+#### Route parameters
+
+```js
+import { useParams, useSearchParams } from "react-router-dom";
+
+const Article = () => {
+  const params = useParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const page = searchParams.get("page");
+  if (page) {
+    setSearchParams("page", "0");
+  }
+
+  return (
+    <div>
+      <h2>Article {params.id} </h2>
+    </div>
+  );
+};
+
+export default Article;
+```
+
+#### Protected routes
+
+```js
+import { useParams, useSearchParams } from "react-router-dom";
+
+const Article = () => {
+  const params = useParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const page = searchParams.get("page");
+  if (page) {
+    setSearchParams("page", "0");
+  }
+
+  return (
+    <div>
+      <h2>Article {params.id} </h2>
+    </div>
+  );
+};
+
+export default Article;
+```
+
+### React portals
+
+[docs](https://react.dev/reference/react-dom/createPortal)
+
+Let you render a component’s UI into a different place in the DOM than its parent component, while still keeping it part of the same React component tree.
+
+Common use cases:
+
+- Modals & dialogs
+- Tooltips
+- Dropdowns
+- Toast notifications
