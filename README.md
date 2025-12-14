@@ -841,3 +841,15 @@ export function MyButton({ label, initialCount }) {
 ```
 
 ### High order components
+
+A React HOC (Higher-Order Component) is a function that takes a component and returns a new enhanced component.
+It’s a pattern for reusing component logic, not a React feature itself.
+
+```jsx
+function withUser(WrappedComponent) {
+  return function (props) {
+    const user = { name: "Alice" };
+    return <WrappedComponent {...props} user={user} />;
+  };
+}
+```
