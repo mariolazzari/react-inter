@@ -1,0 +1,1 @@
+- Q1: Can you show me on example how Redux works with React without Redux toolkit?

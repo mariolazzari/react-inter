@@ -1,0 +1,1 @@
+- Q1: Can you show how Redux is working with vanilla Javascript?

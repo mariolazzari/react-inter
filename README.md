@@ -980,3 +980,178 @@ server.listen(3000, () => console.log("Server running on port 3000"));
 - Faster first paint / load time
 - Better SEO (search engines can index the pre-rendered HTML)
 - Improved social media previews (Open Graph / Twitter cards)
+
+## State management
+
+### React query
+
+[docs](https://tanstack.com/query/latest)
+
+```sh
+pnpm add @tanstack/react-query
+```
+
+```jsx
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query";
+import { getTodos, postTodo } from "../my-api";
+
+// Create a client
+const queryClient = new QueryClient();
+
+function App() {
+  return (
+    // Provide the client to your App
+    <QueryClientProvider client={queryClient}>
+      <Todos />
+    </QueryClientProvider>
+  );
+}
+
+function Todos() {
+  // Access the client
+  const queryClient = useQueryClient();
+
+  // Queries
+  const query = useQuery({ queryKey: ["todos"], queryFn: getTodos });
+
+  // Mutations
+  const mutation = useMutation({
+    mutationFn: postTodo,
+    onSuccess: () => {
+      // Invalidate and refetch
+      queryClient.invalidateQueries({ queryKey: ["todos"] });
+    },
+  });
+
+  return (
+    <div>
+      <ul>
+        {query.data?.map(todo => (
+          <li key={todo.id}>{todo.title}</li>
+        ))}
+      </ul>
+
+      <button
+        onClick={() => {
+          mutation.mutate({
+            id: Date.now(),
+            title: "Do Laundry",
+          });
+        }}
+      >
+        Add Todo
+      </button>
+    </div>
+  );
+}
+
+render(<App />, document.getElementById("root"));
+```
+
+### Redux in plain JavaScript
+
+[docs](https://redux.js.org/)
+
+```js
+const initialState = [];
+
+const reducer = (state = initialState, action) => {
+  console.log("reducer", state, action);
+
+  if (action.type === "ADD_USER") {
+    return [...state, action.payload];
+  }
+  return state;
+};
+
+const store = Redux.createStore(reducer);
+console.log("store", store);
+
+const list = document.querySelector(".list");
+const addBtn = document.querySelector(".addUser");
+const userInput = document.querySelector(".userInput");
+
+store.subscribe(() => {
+  list.innerHTML = "";
+  userInput.value = "";
+  store.getState().forEach(user => {
+    const li = document.createElement("li");
+    li.textContent = user;
+    list.appendChild(li);
+  });
+});
+
+addBtn.addEventListener("click", () => {
+  store.dispatch({ type: "ADD_USER", payload: "mario" });
+});
+```
+
+### Redux with React
+
+```sh
+pnpm add redux react-redux redux-devtools-extension
+```
+
+```js
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+
+const App = () => {
+  const [username, setUsername] = useState("");
+  const { users } = useSelector(state => state.users);
+  const dispatch = useDispatch();
+
+  const addUser = () => {
+    dispatch({ type: "ADD_USER", payload: username });
+  };
+
+  return (
+    <div className="app">
+      <input
+        type="time"
+        value={username}
+        onChange={e => setUsername(e.target.value)}
+      />
+
+      <button onClick={addUser}>Add user</button>
+
+      <ul>
+        {users.map(u => (
+          <li key={u}>{u}</li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+export default App;
+```
+
+### Redux toolkit
+
+```jsx
+import { createSlice } from "@reduxjs/toolkit";
+
+const initialState = {
+  users: [],
+};
+
+const usersSlice = createSlice({
+  name: "users",
+  initialState,
+  reducers: {
+    addUser(state, action) {
+      state.data.push(action.payload);
+    },
+  },
+});
+
+export const { addUser } = usersSlice.actions;
+export default usersSlice.reducer;
+```
