@@ -889,3 +889,94 @@ function LoginForm() {
   );
 }
 ```
+
+### React strict mode
+
+React Strict Mode is a development-only feature that helps you write safer and more future-proof React code.
+It doesn’t affect production builds—it only runs checks and warnings during development.
+Ensures your effects are idempotent and don’t rely on being called once.
+
+```jsx
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App";
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+```
+
+### Hooks vs classes
+
+Hooks let function components use state and lifecycle features that were previously only in classes.
+Recommended by React team, modern, easier to test and maintain.
+
+### Force re-render
+
+It’s usually not recommended because it bypasses React’s natural state-driven reactivity.
+
+```jsx
+import React, { useReducer } from "react";
+
+function MyComponent() {
+  // const [, forceUpdate] = useState(0);
+  const [, forceUpdate] = useReducer(x => x + 1, 0);
+
+  return (
+    <button onClick={() => forceUpdate(prev => prev + 1)}>Re-render</button>
+  );
+}
+```
+
+### React fiber
+
+React Fiber is the reimplementation of React’s core reconciliation algorithm introduced in React 16.
+It’s not a new API, but a complete rewrite of how React updates the DOM efficiently
+
+- React can split the work into chunks
+- Render high-priority components first (like input fields)
+- Continue less important rendering in background
+
+### Server side rendering
+
+React Server-Side Rendering (SSR) is a technique where React components are rendered on the server into HTML before being sent to the client.
+This contrasts with the default client-side rendering (CSR) where the browser builds the HTML using JavaScript. SSR improves initial load performance and SEO.
+
+- Server renders React components to HTML
+- Sends HTML to the client
+- Client “hydrates” the HTML into a fully interactive React app
+
+```jsx
+import express from "express";
+import ReactDOMServer from "react-dom/server";
+import React from "react";
+
+function App() {
+  return <div>Hello from SSR!</div>;
+}
+
+const server = express();
+
+server.get("/", (req, res) => {
+  const html = ReactDOMServer.renderToString(<App />);
+  res.send(`
+    <!DOCTYPE html>
+    <html>
+      <head><title>SSR Example</title></head>
+      <body>
+        <div id="root">${html}</div>
+        <script src="/bundle.js"></script>
+      </body>
+    </html>
+  `);
+});
+
+server.listen(3000, () => console.log("Server running on port 3000"));
+```
+
+- Faster first paint / load time
+- Better SEO (search engines can index the pre-rendered HTML)
+- Improved social media previews (Open Graph / Twitter cards)
