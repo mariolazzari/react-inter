@@ -737,3 +737,107 @@ Common use cases:
 - Tooltips
 - Dropdowns
 - Toast notifications
+
+```js
+import { useEffect } from "react";
+import { createPortal } from "react-dom";
+
+const Modal = ({ isOpen, children, onClose }) => {
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleEsc = e => {
+      if (e.key === "Escape") onClose();
+    };
+
+    document.addEventListener("keydown", handleEsc);
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.removeEventListener("keydown", handleEsc);
+      document.body.style.overflow = "";
+    };
+  }, [isOpen, onClose]);
+
+  if (!isOpen) return null;
+
+  const modalRoot = document.getElementById("modal");
+  if (!modalRoot) return null;
+
+  return createPortal(
+    <div
+      className="modal-overlay"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+    >
+      <div className="modal-content" onClick={e => e.stopPropagation()}>
+        <button className="modal-close" onClick={onClose}>
+          ×
+        </button>
+        {children}
+      </div>
+    </div>,
+    modalRoot
+  );
+};
+
+export default Modal;
+```
+
+### Lazy and suspense
+
+In React, lazy and Suspense are used together for code-splitting—loading components only when they’re needed, which improves performance and reduces initial bundle size.
+
+#### Lazy
+
+React.lazy() lets you dynamically import a component.
+
+```js
+const MyComponent = React.lazy(() => import("./MyComponent"));
+```
+
+#### Suspense
+
+Suspense lets you show a fallback UI (loading state) while the lazy component is loading.
+
+```js
+import React, { Suspense } from "react";
+
+const MyComponent = React.lazy(() => import("./MyComponent"));
+
+function App() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <MyComponent />
+    </Suspense>
+  );
+}
+```
+
+### React and TypeScript
+
+- Static type checking
+- Better autocomplete & refactoring
+- Catch bugs before runtime
+- Self-documenting components
+
+```tsx
+import { useState } from "react";
+
+// Componente Bottone che riceve props
+export function MyButton({ label, initialCount }) {
+  const [count, setCount] = useState(initialCount);
+
+  return (
+    <button
+      onClick={() => setCount(count + 1)}
+      className="px-4 py-2 rounded-2xl shadow text-base font-medium"
+    >
+      {label}: {count}
+    </button>
+  );
+}
+```
+
+### High order components
