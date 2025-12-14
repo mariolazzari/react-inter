@@ -595,3 +595,33 @@ export function useLocalStorage(key, initialValue) {
   return [value, setValue];
 }
 ```
+
+### memo
+
+React.memo is a higher-order component that prevents unnecessary re-renders of a functional component when its props haven’t changed.
+
+```jsx
+const comparatorProps = (prevProps, nextProps) => {
+  if (prevProps.parentWidth !== nextProps.parentWidth) {
+    return false;
+  }
+  return prevProps.slides.every(
+    (el, idx) => el.url === nextProps.slides[idx].url
+  );
+};
+
+export default memo(ImageSlider, comparatorProps);
+```
+
+### What is the best React file structure?
+
+- Feature-based (Domain-driven) structure: organize files by what they do, not by file type.
+- Type-based structure
+
+### How does React router work?
+
+[docs](https://reactrouter.com/)
+
+```js
+
+```

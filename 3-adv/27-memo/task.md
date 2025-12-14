@@ -1,0 +1,2 @@
+- Q1: Do you know how React.memo works?
+- Q2: How to add a comparator to it?
